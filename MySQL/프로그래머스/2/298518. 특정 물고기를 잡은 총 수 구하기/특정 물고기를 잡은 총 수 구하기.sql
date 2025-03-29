@@ -1,0 +1,8 @@
+# 250329 토 PM 11:24
+
+SELECT
+    COUNT(*) AS FISH_COUNT
+FROM FISH_INFO as i
+JOIN FISH_NAME_INFO as n
+ON i.fish_type = n.fish_type
+WHERE FISH_NAME IN ('BASS', 'SNAPPER')
