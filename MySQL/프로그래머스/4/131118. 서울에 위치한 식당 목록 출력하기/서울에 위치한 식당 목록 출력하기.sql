@@ -1,0 +1,19 @@
+# 250402 수 PM 5:35
+/*
+오답포인트) 주소 필터링 조건을 '%서울%'이 아닌 '서울%'로 설정해줘야 함
+*/
+
+SELECT
+    i.REST_ID,
+    REST_NAME,
+    FOOD_TYPE,
+    FAVORITES,
+    ADDRESS,
+    ROUND(AVG(r.REVIEW_SCORE), 2) AS SCORE
+FROM REST_INFO as i
+JOIN REST_REVIEW as r
+ON i.REST_ID = r.REST_ID
+WHERE ADDRESS LIKE '서울%'
+GROUP BY
+    i.REST_ID
+ORDER BY SCORE DESC, FAVORITES DESC
