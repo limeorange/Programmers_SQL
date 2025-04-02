@@ -1,0 +1,12 @@
+# 250403 목 AM 12:27 / IF(조건, A, B)
+
+WITH f AS(
+    SELECT
+        ID,
+        IF(LENGTH is null, 10, LENGTH) AS LENGTH
+    FROM FISH_INFO
+)
+
+SELECT
+    ROUND(AVG(LENGTH), 2) AS AVERAGE_LENGTH
+FROM f
