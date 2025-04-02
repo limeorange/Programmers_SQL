@@ -1,59 +1,26 @@
-# 240926 목 PM 9:22
+# 250402 수 PM 10:29
 
-# 0시부터 23시까지, 각 시간대별로 입양이 몇 건이나 발생했는지 조회하는 SQL문을 작성해주세요.
-# 이때 결과는 시간대 순으로 정렬해야 합니다.
-
-# with문 사용해서 서브쿼리 생성
-# 서브쿼리 생성할 때 변수 사용
-# 입양이 몇 건 발생 => animal_id 기준으로 COUNT
-
-# 방법1) 변수 사용
-SET @hour = -1;
-WITH h AS (
-    SELECT @hour := @hour + 1 AS HOUR
-    FROM information_schema.COLUMNS
-    LIMIT 24
-)
+WITH
+    hour_count AS (
+    SELECT
+    HOUR(datetime) AS HOUR,
+    COUNT(*) AS COUNT
+    FROM animal_outs
+    GROUP BY HOUR
+    ),
+    hour_all AS (
+    SELECT 0 AS HOUR
+    UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+    UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8
+    UNION SELECT 9 UNION SELECT 10 UNION SELECT 11 UNION SELECT 12
+    UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION SELECT 16
+    UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20
+    UNION SELECT 21 UNION SELECT 22 UNION SELECT 23
+    )
 
 SELECT
-    h.hour,
-    COUNT(a.animal_id) AS COUNT
-FROM h
-LEFT JOIN ANIMAL_OUTS AS a
-ON h.hour = HOUR(a.datetime)
-GROUP BY h.hour
-ORDER BY h.hour
-
-# 방법2) UNION ALL로 서브쿼리 생성
-# SELECT
-#     h.hour,
-#     count(animal_id) AS COUNT
-# FROM 
-#     (SELECT 0 AS HOUR UNION ALL
-#     SELECT 1 UNION ALL
-#     SELECT 2 UNION ALL
-#     SELECT 3 UNION ALL
-#     SELECT 4 UNION ALL
-#     SELECT 5 UNION ALL
-#     SELECT 6 UNION ALL
-#     SELECT 7 UNION ALL
-#     SELECT 8 UNION ALL
-#     SELECT 9 UNION ALL
-#     SELECT 10 UNION ALL
-#     SELECT 11 UNION ALL
-#     SELECT 12 UNION ALL
-#     SELECT 13 UNION ALL
-#     SELECT 14 UNION ALL
-#     SELECT 15 UNION ALL
-#     SELECT 16 UNION ALL
-#     SELECT 17 UNION ALL
-#     SELECT 18 UNION ALL
-#     SELECT 19 UNION ALL
-#     SELECT 20 UNION ALL
-#     SELECT 21 UNION ALL
-#     SELECT 22 UNION ALL
-#     SELECT 23) AS h
-# LEFT JOIN ANIMAL_OUTS AS a
-# ON h.hour = HOUR(a.datetime)
-# GROUP BY h.hour
-# ORDER BY h.hour
+    a.hour,
+    IFNULL(COUNT, 0) AS COUNT
+FROM hour_all as a
+LEFT JOIN hour_count as c
+ON a.HOUR = c.HOUR
