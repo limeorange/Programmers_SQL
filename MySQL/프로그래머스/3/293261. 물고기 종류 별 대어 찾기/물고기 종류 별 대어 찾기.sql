@@ -1,0 +1,21 @@
+# 250402 수 PM 7:56
+
+WITH max_fish AS(
+    SELECT
+    FISH_NAME,
+    MAX(LENGTH) AS LENGTH
+    FROM FISH_INFO AS i
+    JOIN FISH_NAME_INFO AS n
+    ON i.fish_type = n.fish_type
+    GROUP BY FISH_NAME
+)
+
+SELECT
+    ID,
+    FISH_NAME,
+    LENGTH
+FROM FISH_INFO AS i
+JOIN FISH_NAME_INFO AS n
+ON i.fish_type = n.fish_type
+WHERE (FISH_NAME, LENGTH) IN (SELECT FISH_NAME, LENGTH FROM max_fish)
+ORDER BY ID
