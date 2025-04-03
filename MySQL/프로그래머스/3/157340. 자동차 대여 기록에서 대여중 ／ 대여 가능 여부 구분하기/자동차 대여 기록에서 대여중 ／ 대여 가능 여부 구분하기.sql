@@ -5,7 +5,7 @@ WITH car_table AS (
         car_id,
         MAX(CASE
             WHEN start_date <= '2022-10-16' AND
-            DATE_FORMAT('2022-10-16', '%Y-%m-%d') <= end_date THEN 1
+            '2022-10-16' <= end_date THEN 1
             ELSE 0
         END) AS AVAILABILITY
     FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
