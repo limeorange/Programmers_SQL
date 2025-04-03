@@ -1,27 +1,21 @@
-# 241012 토 AM 12:37
-
-# 1) 평균 길이가 33cm 이상인 물고기 타입 구하기 => 서브쿼리
-# 2) 메인쿼리에서 종류별로 분류하여 잡은 수, 최대 길이, 물고기의 종류 출력
+# 250403 목 PM 5:26
+/*
+1) 10cm 이하 물고기 10cm로 채워주기 (CTE: fish_table)
+- LENGTH 전처리 과정과 LENGTH를 활용한 GROUP BY + 집계 함수 작업 병행 불가 => CTE 분리 
+2) 외부 테이블에서 GROUP BY + AVG, MAX, COUNT 연산 조건에 맞춰서 진행
+*/
+WITH fish_table AS(
+    SELECT
+        FISH_TYPE,
+        IF(LENGTH is null, 10, LENGTH) AS LENGTH
+    FROM FISH_INFO
+)
 
 SELECT
     COUNT(*) AS FISH_COUNT,
-    MAX(LENGTH) AS MAX_LENGTH,  
+    MAX(LENGTH) AS MAX_LENGTH,
     FISH_TYPE
-FROM FISH_INFO
-WHERE
-    FISH_TYPE IN
-                (SELECT
-                    FISH_TYPE
-                FROM
-                    (SELECT
-                        FISH_TYPE,
-                        CASE
-                            WHEN LENGTH is null THEN 10
-                            ELSE LENGTH
-                        END AS LENGTH
-                    FROM FISH_INFO
-                    ) AS T
-                GROUP BY FISH_TYPE
-                HAVING AVG(LENGTH) >= 33)
+FROM fish_table
 GROUP BY FISH_TYPE
+HAVING AVG(LENGTH) >= 33
 ORDER BY FISH_TYPE
