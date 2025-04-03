@@ -3,7 +3,7 @@
 오답포인트) CAR_RENTAL_COMPANY_RENTAL_HISTORY에서 CAR_ID 조건 걸 때(car_table 활용)
 8월 ~ 10월 날짜 조건도 같이 걸어줘야 함!
 1) 2022-08 ~ 2022-10까지 총 대여 횟수가 5회 이상인 자동차 CAR_ID 추출 (CTE)
-2) 1)에 해당하는 자동차에  대해 월별 총 대여 횟수 출력
+2) 1)에 해당하는 자동차에 대해 월별 총 대여 횟수 출력
 */
 
 WITH car_table AS (
