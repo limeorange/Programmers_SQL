@@ -1,33 +1,44 @@
-# 240927 금 AM 1:02
+# 250403 목 PM 3:33
 
-# DEVELOPERS 테이블에서 GRADE별 개발자의 정보를 조회하려 합니다.
-# GRADE는 다음과 같이 정해집니다.
-# A : Front End 스킬과 Python 스킬을 함께 가지고 있는 개발자
-# B : C# 스킬을 가진 개발자
-# C : 그 외의 Front End 개발자
-# GRADE가 존재하는 개발자의 GRADE, ID, EMAIL을 조회하는 SQL 문을 작성해 주세요.
-# 결과는 GRADE와 ID를 기준으로 오름차순 정렬해 주세요.
+/*
+오답포인트) A, B, C 테이블을 각각 구해서 UNION하는 방법은 중복 처리가 제대로 안됨
+1) A, B, C 등급 조건 처리 (CASE WHEN)
+2) WHERE 조건으로 A, B, C 등급에 해당하지 않는 개발자 제외하기
+- not null 조건 주려면 서브쿼리나 CTE로 작성해야 함
+*/
 
-# with절에서 Front End 언어 코드합을 서브쿼리로 저장
-# having은 주로 group by 결과에 대해 조건 설정할 때 사용하는데, mysql에서는 select에서 별칭 지정한 것에 대해서도 having으로 조건 설정하는 것을 예외적으로 허용한다고 함
-# CASE WHEN THEN 뒤에 ELSE null 설정 안해도 자동으로 null 처리됨
-
-WITH f AS (
-    SELECT
-        SUM(CODE) AS FRONT
+WITH
+    F AS (
+    SELECT SUM(CODE) AS CODE
     FROM SKILLCODES
     WHERE CATEGORY = 'Front End'
-)
-
-SELECT
+    ),
+    C AS (
+    SELECT CODE AS CODE
+    FROM SKILLCODES
+    WHERE NAME = 'C#'
+    ),
+    P AS (
+    SELECT SUM(CODE) AS CODE
+    FROM SKILLCODES
+    WHERE NAME = 'Python'
+    ),
+    dev_table AS (
+    SELECT
     CASE
-        WHEN d.skill_code & (SELECT FRONT FROM f)
-            and d.skill_code & (SELECT CODE FROM SKILLCODES WHERE NAME = 'Python') THEN 'A'
-        WHEN d.skill_code & (SELECT CODE FROM SKILLCODES WHERE NAME = 'C#') THEN 'B'
-        WHEN d.skill_code & (SELECT FRONT FROM f) THEN 'C'
+        WHEN SKILL_CODE & (SELECT CODE FROM F) > 0 AND
+             SKILL_CODE & (SELECT CODE FROM P) > 0 THEN 'A'
+        WHEN SKILL_CODE & (SELECT CODE FROM C) > 0 THEN 'B'
+        WHEN SKILL_CODE & (SELECT CODE FROM F) > 0 AND
+             SKILL_CODE & (SELECT CODE FROM P) = 0 THEN 'C'
     END AS GRADE,
     ID,
     EMAIL
-FROM DEVELOPERS AS d
-HAVING GRADE is not null
+    FROM DEVELOPERS
+    )
+
+SELECT
+    *
+FROM dev_table
+WHERE GRADE is not NULL
 ORDER BY GRADE, ID
