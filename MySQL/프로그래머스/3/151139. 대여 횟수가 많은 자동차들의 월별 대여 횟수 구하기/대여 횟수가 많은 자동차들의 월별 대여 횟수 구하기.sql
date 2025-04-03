@@ -1,27 +1,28 @@
-# 241012 토 AM 12:15
+# 250403 목 PM 5:09
+/*
+오답포인트) CAR_RENTAL_COMPANY_RENTAL_HISTORY에서 CAR_ID 조건 걸 때(car_table 활용)
+8월 ~ 10월 날짜 조건도 같이 걸어줘야 함!
+1) 2022-08 ~ 2022-10까지 총 대여 횟수가 5회 이상인 자동차 CAR_ID 추출 (CTE)
+2) 1)에 해당하는 자동차에  대해 월별 총 대여 횟수 출력
+*/
 
-# 2022년 8월부터 2022년 10월까지 총 대여 횟수가 5회 이상인 자동차들에 대해서
-    # 서브쿼리 활용 => 조건 충족하는 CAR_ID 선별
-    # 메인쿼리에서 '2022년 8월부터 2022년 10월' 조건 다시 설정해 줘야 함
-# 해당 기간 동안의 월별 자동차 ID 별 총 대여 횟수(컬럼명: RECORDS) 리스트를 출력
-    # group by 월, 자동차 ID
-# 특정 월의 총 대여 횟수가 0인 경우 결과에서 제외
-# 정렬: 월 오름차순, 자동차 ID 내림차순
+WITH car_table AS (
+    SELECT
+        CAR_ID
+    FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
+    WHERE START_DATE LIKE '2022-08%' OR
+          START_DATE LIKE '2022-09%' OR
+          START_DATE LIKE '2022-10%'
+   GROUP BY CAR_ID
+   HAVING COUNT(*) >= 5
+)
 
 SELECT
     MONTH(START_DATE) AS MONTH,
     CAR_ID,
     COUNT(*) AS RECORDS
 FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
-WHERE CAR_ID IN
-                (SELECT
-                    CAR_ID
-                FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
-                WHERE
-                    DATE_FORMAT(START_DATE, '%Y-%m') BETWEEN '2022-08' AND '2022-10'
-                GROUP BY CAR_ID
-                HAVING COUNT(*) >= 5)
-    AND DATE_FORMAT(START_DATE, '%Y-%m') BETWEEN '2022-08' AND '2022-10'
-GROUP BY MONTH, CAR_ID
-HAVING RECORDS >= 1
+WHERE CAR_ID IN (SELECT CAR_ID FROM car_table) AND
+      ('2022-08-01' <= START_DATE AND START_DATE <= '2022-10-31')
+GROUP BY MONTH(START_DATE), CAR_ID
 ORDER BY MONTH, CAR_ID DESC
