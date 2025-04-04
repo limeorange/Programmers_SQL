@@ -1,21 +1,29 @@
-# 240930 월 PM 12:02
+# 250404 금 PM 9:29
 
-# PATIENT, DOCTOR 그리고 APPOINTMENT 테이블에서
-# 2022년 4월 13일 취소되지 않은 흉부외과(CS) 진료 예약 내역을 조회하는 SQL문을 작성해주세요.
-# 진료예약번호, 환자이름, 환자번호, 진료과코드, 의사이름, 진료예약일시 항목이 출력되도록 작성해주세요.
-# 결과는 진료예약일시를 기준으로 오름차순 정렬해주세요.
+WITH ap_table AS (
+    SELECT
+        apnt_no,
+        pt_no,
+        mcdp_cd,
+        mddr_id,
+        apnt_ymd
+    FROM appointment
+    WHERE
+        apnt_ymd LIKE '2022-04-13%' AND
+        apnt_cncl_yn = 'N' AND
+        mcdp_cd = 'CS'
+)
 
 SELECT
-    APNT_NO,
-    PT_NAME,
-    A.PT_NO,
-    A.MCDP_CD,
-    DR_NAME,
-    APNT_YMD
-FROM APPOINTMENT AS A
-JOIN PATIENT AS P
-ON A.PT_NO = P.PT_NO
-JOIN DOCTOR AS D
-ON A.MDDR_ID = D.DR_ID
-WHERE APNT_YMD LIKE '2022-04-13%' AND APNT_CNCL_YN = 'N' AND A.MCDP_CD = 'CS'
-ORDER BY APNT_YMD
+    apnt_no,
+    pt_name,
+    a.pt_no,
+    a.mcdp_cd,
+    dr_name,
+    apnt_ymd
+FROM ap_table as a
+JOIN patient as p
+ON a.pt_no = p.pt_no
+JOIN doctor as d
+ON a.mddr_id = d.dr_id
+ORDER BY apnt_ymd
