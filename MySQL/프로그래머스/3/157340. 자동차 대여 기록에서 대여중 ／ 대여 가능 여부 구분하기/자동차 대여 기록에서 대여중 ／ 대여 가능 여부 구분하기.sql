@@ -1,20 +1,21 @@
-# 250403 목 PM 4:20
+# 250610 화 PM 9:28
 
-WITH car_table AS (
+WITH cnt_table AS (
     SELECT
         car_id,
-        MAX(CASE
-            WHEN start_date <= '2022-10-16' AND
-            '2022-10-16' <= end_date THEN 1
+        CASE
+            WHEN '2022-10-16' BETWEEN start_date AND end_date THEN 1
             ELSE 0
-        END) AS AVAILABILITY
-    FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
-    GROUP BY car_id
-    ORDER BY car_id
+        END AS availability
+    FROM car_rental_company_rental_history
 )
 
 SELECT
-    CAR_ID,
-    IF(availability = 1, '대여중', '대여 가능') AS AVAILABILITY
-FROM car_table
-ORDER BY CAR_ID DESC
+    car_id,
+    CASE
+        WHEN MAX(availability) = 1 THEN '대여중'
+        ELSE '대여 가능'
+    END AS availability
+FROM cnt_table
+GROUP BY car_id
+ORDER BY car_id DESC
