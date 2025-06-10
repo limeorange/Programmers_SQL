@@ -1,7 +1,7 @@
-# 250403 목 AM 12:16 / IFNULL(col, 대체값)
+# 250610 화 PM 10:26 / IFNULL(col, 대체값)
 
 SELECT
-    ANIMAL_TYPE,
-    IFNULL(NAME, 'No name') AS NAME,
-    SEX_UPON_INTAKE
-FROM ANIMAL_INS
+    animal_type,
+    IFNULL(name, 'No name') AS name,
+    sex_upon_intake
+FROM animal_ins
