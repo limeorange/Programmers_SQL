@@ -1,17 +1,19 @@
-# 250329 토 PM 8:51
-/*
-ONLINE_SALE 테이블에서
-동일한 회원이 동일한 상품을 재구매한 데이터를 구하여, => group by
-재구매한 회원 ID와 재구매한 상품 ID를 출력하는 SQL문을 작성해주세요. 
+# 250610 화 PM 2:53
 
-결과는 회원 ID를 기준으로 오름차순 정렬해주시고
-회원 ID가 같다면 상품 ID를 기준으로 내림차순 정렬해주세요.
+/*
+COUNT(*)을 출력했을 때 데이터가 많아서 노출이 안되는 것이었음.
+CTE로 만들어서 WHERE로 조회해보니 뜸.
+
+1) group by만 사용: 고유 조합(그룹 단위) 나열
+2) group by + 집계함수: 그룹별 요약 통계
+3) group by + having: 그룹에 조건 걸 때 사용 (중복횟수 필터링 등)
+4) select에 group by 컬럼만 쓰는 이유: 그룹화한 결과의 식별자 역할. 안전하고 정확함.
 */
 
 SELECT
     user_id,
     product_id
-FROM ONLINE_SALE
+FROM online_sale
 GROUP BY user_id, product_id
 HAVING COUNT(*) >= 2
 ORDER BY user_id, product_id DESC
