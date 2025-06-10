@@ -1,29 +1,19 @@
-# 250402 수 PM 9:24
+# 250610 화 PM 4:58
 
-WITH
-    join_table AS(
+WITH t1 AS (
     SELECT
-        b.author_id,
-        author_name,
-        category,
-        price,
-        sales
-    FROM BOOK_SALES AS s
-    JOIN BOOK AS b
+        s.book_id, author_id, category, sales, price
+    FROM book_sales AS s
+    JOIN book AS b
     ON s.book_id = b.book_id
-    JOIN AUTHOR AS a
-    ON b.author_id = a.author_id
-    WHERE sales_date LIKE '2022-01%'
-    )
+    WHERE YEAR(sales_date) = 2022 and MONTH(sales_date) = 1
+)
 
 SELECT
-    author_id,
-    author_name,
-    category,
-    SUM(price*sales) AS TOTAL_SALES
-FROM join_table
-GROUP BY
-    author_id,
-    author_name,
-    category
+    t.author_id, author_name, category,
+    SUM(sales*price) AS total_sales
+FROM t1 AS t
+JOIN author AS a
+ON t.author_id = a.author_id
+GROUP BY t.author_id, author_name, category
 ORDER BY author_id, category DESC
