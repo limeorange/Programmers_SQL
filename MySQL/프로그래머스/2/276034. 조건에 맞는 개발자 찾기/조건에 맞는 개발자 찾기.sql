@@ -1,22 +1,25 @@
-# 250330 일 AM 12:43 / CTE로 서브쿼리 분리
+# 250610 화 PM 4:00
 
-WITH 
-    CODE_C AS (
+WITH
+    p_code AS (
         SELECT CODE
-        FROM SKILLCODES
-        WHERE NAME  = 'C#'
+        FROM skillcodes
+        WHERE name = 'Python'
     ),
-    CODE_P AS (
+    c_code AS (
         SELECT CODE
-        FROM SKILLCODES
-        WHERE NAME = 'Python'
+        FROM skillcodes
+        WHERE name = 'C#'
     )
 
 SELECT
-    ID, EMAIL, FIRST_NAME, LAST_NAME
-FROM DEVELOPERS
+    id,
+    email,
+    first_name,
+    last_name
+FROM developers
 WHERE
-    SKILL_CODE & (SELECT CODE FROM CODE_C)
-    OR
-    SKILL_CODE & (SELECT CODE FROM CODE_P)
-ORDER BY ID
+    skill_code & (SELECT code FROM p_code)
+    or
+    skill_code & (SELECT code FROM c_code)
+ORDER BY id
