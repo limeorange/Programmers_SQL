@@ -1,16 +1,16 @@
-# 250402 수 PM 4:47
+# 250610 화 PM 2:26
+
 /*
-PERCENT_RANK() OVER (ORDER BY 컬럼명) AS 새로운_컬럼명
+PERCENT_RANK() OVER (ORDER BY 컬럼명 정렬순서) AS 새로운_컬럼명
 => 새로운_컬럼명에서 예약어(rank, order 등) 안 쓰도록 주의!
 */
 
-WITH 
-    RANK_P AS (
+WITH rank_info AS (
     SELECT
-    ID,
-    PERCENT_RANK() OVER (ORDER BY SIZE_OF_COLONY DESC) AS rank_p
-    FROM ECOLI_DATA
-    )
+        *,
+        PERCENT_RANK() OVER (ORDER BY SIZE_OF_COLONY DESC) AS rank_p
+    FROM ecoli_data
+)
 
 SELECT
     ID,
@@ -19,6 +19,6 @@ SELECT
         WHEN rank_p <= 0.5 THEN 'HIGH'
         WHEN rank_p <= 0.75 THEN 'MEDIUM'
         ELSE 'LOW'
-    END AS 'COLONY_NAME'
-FROM RANK_P
+    END AS COLONY_NAME
+FROM rank_info
 ORDER BY ID
