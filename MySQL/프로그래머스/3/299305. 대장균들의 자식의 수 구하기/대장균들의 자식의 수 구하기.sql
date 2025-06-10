@@ -1,10 +1,10 @@
-# 250402 수 PM 4:01
+# 250610 화 PM 2:03
 
 SELECT
     parent.ID,
-    count(child.parent_id) AS CHILD_COUNT
-FROM ECOLI_DATA as parent
-LEFT JOIN ECOLI_DATA as child
+    count(child.parent_id) AS child_count
+FROM ecoli_data as parent
+LEFT JOIN ecoli_data as child
 ON parent.id = child.parent_id
 GROUP BY parent.ID
 ORDER BY parent.ID
