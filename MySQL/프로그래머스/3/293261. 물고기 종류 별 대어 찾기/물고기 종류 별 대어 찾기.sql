@@ -1,21 +1,19 @@
-# 250402 수 PM 7:56
+# 250610 화 PM 10:20
 
-WITH max_fish AS(
+WITH max_info AS (
     SELECT
-    FISH_NAME,
-    MAX(LENGTH) AS LENGTH
-    FROM FISH_INFO AS i
-    JOIN FISH_NAME_INFO AS n
-    ON i.fish_type = n.fish_type
-    GROUP BY FISH_NAME
+        fish_type,
+        max(length) AS length
+    FROM fish_info
+    GROUP BY fish_type
 )
 
 SELECT
-    ID,
-    FISH_NAME,
-    LENGTH
-FROM FISH_INFO AS i
-JOIN FISH_NAME_INFO AS n
-ON i.fish_type = n.fish_type
-WHERE (FISH_NAME, LENGTH) IN (SELECT FISH_NAME, LENGTH FROM max_fish)
-ORDER BY ID
+    id,
+    fish_name,
+    length
+FROM fish_info AS f
+JOIN fish_name_info AS n
+ON f.fish_type = n.fish_type
+WHERE (f.fish_type, f.length) in (SELECT fish_type, length FROM max_info)
+ORDER BY id
