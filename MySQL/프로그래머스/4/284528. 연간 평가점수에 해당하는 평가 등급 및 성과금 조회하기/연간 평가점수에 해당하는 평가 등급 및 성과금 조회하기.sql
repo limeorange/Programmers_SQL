@@ -1,33 +1,35 @@
-# 250403 목 PM 2:36
+# 250610 화 PM 8:04
 
-WITH hr_table AS (
+/*
+1) 평가등급 계산
+2) 성과금 계산
+3) 사번, 성명, 평가등급, 성과금 출력
+*/
+
+WITH grade_table AS (
     SELECT
-    e.EMP_NO,
-    EMP_NAME,
-    AVG(SCORE) AS SCORE,
-    MAX(SAL) AS SAL
-    FROM HR_EMPLOYEES AS e
-    LEFT JOIN HR_GRADE AS g
-    ON e.EMP_NO = g.EMP_NO
-    GROUP BY
-        e.EMP_NO,
-        EMP_NAME
+        emp_no,
+        CASE
+            WHEN AVG(score) >= 96 THEN 'S'
+            WHEN AVG(score) >= 90 THEN 'A'
+            WHEN AVG(score) >= 80 THEN 'B'
+            ELSE 'C'
+        END AS grade
+    FROM hr_grade
+    GROUP BY emp_no
 )
 
 SELECT
-    EMP_NO,
-    EMP_NAME,
+    g.emp_no,
+    emp_name,
+    grade,
     CASE
-        WHEN 96 <= SCORE THEN 'S'
-        WHEN 90 <= SCORE THEN 'A'
-        WHEN 80 <= SCORE THEN 'B'
-        ELSE 'C'
-    END AS GRADE,
-    CASE
-        WHEN 96 <= SCORE THEN SAL*0.2
-        WHEN 90 <= SCORE THEN SAL*0.15
-        WHEN 80 <= SCORE THEN SAL*0.1
+        WHEN grade = 'S' THEN sal * 0.2
+        WHEN grade = 'A' THEN sal * 0.15
+        WHEN grade = 'B' THEN sal * 0.1
         ELSE 0
-    END AS BONUS    
-FROM hr_table
-ORDER BY EMP_NO
+    END AS bonus        
+FROM grade_table AS g
+JOIN hr_employees AS e
+ON g.emp_no = e.emp_no
+ORDER BY emp_no
