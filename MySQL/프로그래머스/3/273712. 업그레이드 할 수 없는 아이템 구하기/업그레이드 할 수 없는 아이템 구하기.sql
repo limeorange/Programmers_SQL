@@ -1,21 +1,19 @@
-# 250402 수 AM 12:11
-/* 
-1) CTE 이용 => 업그레이드 가능한 아이템 목록 구함 (upgraded)
-2) WHERE절의 'not in'으로 upgraded 속하지 않은 아이템 정보 출력
+# 250610 화 PM 10:07
+
+/*
+1. 업그레이드 가능한 item_id 구하기
+2. not in 으로 업그레이드 불가능한 item_id 구하기
 */
 
-WITH upgraded AS (
+WITH upgrade_item_id AS (
     SELECT
-    DISTINCT ITEM_NAME
-    FROM ITEM_TREE AS t
-    JOIN ITEM_INFO AS i
-    ON t.parent_item_id = i.item_id
+        DISTINCT parent_item_id AS item_id
+    FROM item_tree
+    WHERE parent_item_id is not null
 )
 
 SELECT
-    ITEM_ID,
-    ITEM_NAME,
-    RARITY
-FROM ITEM_INFO
-WHERE ITEM_NAME not in (SELECT ITEM_NAME FROM upgraded)
-ORDER BY ITEM_ID DESC
+    item_id, item_name, rarity
+FROM item_info
+WHERE item_id not in (SELECT item_id FROM upgrade_item_id)
+ORDER BY item_id DESC
