@@ -1,21 +1,25 @@
-# 250403 목 PM 5:26
+# 250611 수 AM 9:41
+
 /*
-1) 10cm 이하 물고기 10cm로 채워주기 (CTE: fish_table)
-- LENGTH 전처리 과정과 LENGTH를 활용한 GROUP BY + 집계 함수 작업 병행 불가 => CTE 분리 
-2) 외부 테이블에서 GROUP BY + AVG, MAX, COUNT 연산 조건에 맞춰서 진행
+1) 10cm 이하 물고기 10cm로 전처리
+2) 종류별 평균 길이가 33cm 이상인 물고기 분류
+3) 종류별 잡은 수, 최대길이, 종류 출력
 */
-WITH fish_table AS(
+
+WITH fish_33 AS (
     SELECT
-        FISH_TYPE,
-        IF(LENGTH is null, 10, LENGTH) AS LENGTH
-    FROM FISH_INFO
+        fish_type,
+        AVG(IFNULL(length, 10)) AS length
+    FROM fish_info
+    GROUP BY fish_type
+    HAVING length >= 33
 )
 
 SELECT
-    COUNT(*) AS FISH_COUNT,
-    MAX(LENGTH) AS MAX_LENGTH,
-    FISH_TYPE
-FROM fish_table
-GROUP BY FISH_TYPE
-HAVING AVG(LENGTH) >= 33
-ORDER BY FISH_TYPE
+    COUNT(*) AS fish_count,
+    MAX(length) AS max_length,
+    fish_type
+FROM fish_info
+WHERE fish_type in (SELECT fish_type FROM fish_33)
+GROUP BY fish_type
+ORDER BY fish_type
