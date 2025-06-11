@@ -1,4 +1,4 @@
-# 250611 수 PM 4:15
+# 250611 수 PM 4:17
 
 WITH 
     cnt_table AS (
@@ -10,18 +10,12 @@ WITH
         ORDER BY cnt DESC
     ),
     
-    max_cnt AS (
-        SELECT
-            MAX(cnt) AS max_cnt
-        FROM cnt_table
-    ),
-    
     member_list AS (
         SELECT
             member_id
         FROM rest_review
         GROUP BY member_id
-        HAVING COUNT(*) = (SELECT max_cnt FROM max_cnt)
+        HAVING COUNT(*) = (SELECT cnt FROM cnt_table limit 1)
     )
 
 SELECT
