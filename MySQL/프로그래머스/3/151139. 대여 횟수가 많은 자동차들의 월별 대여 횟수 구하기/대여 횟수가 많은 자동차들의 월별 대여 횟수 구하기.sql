@@ -1,28 +1,30 @@
-# 250403 목 PM 5:09
+# 250611 수 AM 9:25
+
 /*
-오답포인트) CAR_RENTAL_COMPANY_RENTAL_HISTORY에서 CAR_ID 조건 걸 때(car_table 활용)
-8월 ~ 10월 날짜 조건도 같이 걸어줘야 함!
-1) 2022-08 ~ 2022-10까지 총 대여 횟수가 5회 이상인 자동차 CAR_ID 추출 (CTE)
-2) 1)에 해당하는 자동차에 대해 월별 총 대여 횟수 출력
+1) 8~10월 누적 5회 이상 차량만 필터링
+2) 누적 기준 필터 후 월별 집계
+오답포인트) 월별 집계에 대해 '5회 이상' 기준 적용하고 있었음.
 */
 
 WITH car_table AS (
     SELECT
-        CAR_ID
-    FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
-    WHERE START_DATE LIKE '2022-08%' OR
-          START_DATE LIKE '2022-09%' OR
-          START_DATE LIKE '2022-10%'
-   GROUP BY CAR_ID
-   HAVING COUNT(*) >= 5
+        car_id
+    FROM car_rental_company_rental_history
+    WHERE start_date LIKE '2022-08%' OR
+          start_date LIKE '2022-09%' OR
+          start_date LIKE '2022-10%'
+    GROUP BY car_id
+    HAVING COUNT(*) >= 5
 )
 
 SELECT
-    MONTH(START_DATE) AS MONTH,
-    CAR_ID,
-    COUNT(*) AS RECORDS
-FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
-WHERE CAR_ID IN (SELECT CAR_ID FROM car_table) AND
-      ('2022-08-01' <= START_DATE AND START_DATE <= '2022-10-31')
-GROUP BY MONTH(START_DATE), CAR_ID
-ORDER BY MONTH, CAR_ID DESC
+    MONTH(start_date) AS month,
+    car_id,
+    COUNT(*) AS records
+FROM car_rental_company_rental_history
+WHERE car_id in (SELECT car_id FROM car_table) AND
+      (start_date LIKE '2022-08%' OR
+      start_date LIKE '2022-09%' OR
+      start_date LIKE '2022-10%')
+GROUP BY month, car_id
+ORDER BY month, car_id DESC
