@@ -1,16 +1,17 @@
-# 250610 화 PM 4:00
+# 251030 목 PM 6:51
 
-WITH
-    p_code AS (
-        SELECT CODE
-        FROM skillcodes
-        WHERE name = 'Python'
-    ),
+WITH p_code AS (
+    SELECT
+        code
+    FROM skillcodes
+    WHERE name = 'Python'
+), 
     c_code AS (
-        SELECT CODE
-        FROM skillcodes
-        WHERE name = 'C#'
-    )
+    SELECT
+        code
+    FROM skillcodes
+    WHERE name = 'C#'
+)
 
 SELECT
     id,
@@ -18,8 +19,6 @@ SELECT
     first_name,
     last_name
 FROM developers
-WHERE
-    skill_code & (SELECT code FROM p_code)
-    or
-    skill_code & (SELECT code FROM c_code)
+WHERE (skill_code & (SELECT code FROM p_code)) OR
+       (skill_code & (SELECT code FROM c_code))
 ORDER BY id
