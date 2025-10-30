@@ -1,12 +1,11 @@
-# 250610 화 PM 4:40
+# 251030 목 PM 7:38
 
 SELECT
-    child.id,
-    child.genotype,
-    parent.genotype AS parent_genotype
-FROM ecoli_data AS child
-JOIN ecoli_data AS parent
-ON child.parent_id = parent.id
-WHERE
-    child.genotype & parent.genotype = parent.genotype
+    e1.id,
+    e1.genotype AS genotype,
+    e2.genotype AS parent_genotype
+FROM ecoli_data AS e1
+JOIN ecoli_data AS e2
+ON e1.parent_id = e2.id
+WHERE e1.genotype & e2.genotype = e2.genotype
 ORDER BY id
