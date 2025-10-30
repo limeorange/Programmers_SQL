@@ -1,8 +1,14 @@
-# 250610 화 PM 4:08
+# 251030 목 PM 6:59
+
+WITH type_list AS (
+    SELECT
+        fish_type
+    FROM fish_name_info
+    WHERE 
+        fish_name in ('BASS', 'SNAPPER')
+)
 
 SELECT
     COUNT(*) AS FISH_COUNT
-FROM fish_info AS f
-LEFT JOIN fish_name_info AS i
-ON f.FISH_TYPE = i.FISH_TYPE
-WHERE fish_name in ('BASS', 'SNAPPER')
+FROM fish_info
+WHERE fish_type in (SELECT fish_type FROM type_list)
