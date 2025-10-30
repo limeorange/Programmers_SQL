@@ -1,13 +1,13 @@
-# 250610 화 PM 3:05
+# 251030 목 PM 6:12
 
 SELECT
     member_id,
     member_name,
     gender,
-    date_format(date_of_birth, '%Y-%m-%d') AS date_of_birth
+    DATE_FORMAT(date_of_birth, '%Y-%m-%d') AS DATE_OF_BIRTH
 FROM member_profile
 WHERE
-    MONTH(date_of_birth) = 3 AND
     gender = 'W' AND
-    TLNO is not NULL
+    date_of_birth LIKE '%-03-%' AND
+    tlno is not null
 ORDER BY member_id
