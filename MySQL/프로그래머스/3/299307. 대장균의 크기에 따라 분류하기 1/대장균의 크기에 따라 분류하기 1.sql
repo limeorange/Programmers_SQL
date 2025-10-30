@@ -1,11 +1,11 @@
-# 250610 화 PM 2:11
+# 251030 목 PM 8:45
 
 SELECT
-    ID,
+    id,
     CASE
-        WHEN size_of_colony <= 100 THEN 'LOW'
-        WHEN size_of_colony <= 1000 THEN 'MEDIUM'
-        ELSE 'HIGH'
-    END AS SIZE
+        WHEN size_of_colony > 1000 THEN 'HIGH'
+        WHEN (100 < size_of_colony AND size_of_colony <= 1000) THEN 'MEDIUM'
+        ELSE 'LOW'
+    END AS size
 FROM ecoli_data
-ORDER BY ID
+ORDER BY id
