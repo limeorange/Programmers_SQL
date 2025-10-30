@@ -1,29 +1,23 @@
-# 250610 화 PM 1:46
+# 251030 목 PM 8:22
 
-/*
-- g1: 1세대 대장균 ID (1, 2) => 부모 ID가 NULL
-- g2: 2세대 대장균 ID (3, 4, 5) => 부모 ID가 1, 2 (SELECT ID FROM g1)
-- g3: 3세대 대장균 ID (6, 7) => 부모 ID가 3, 4, 5 (SELECT ID FROM g2)
-*/
+# 1세대: 1, 2 (P_ID = NULL)
+# 2세대: 3, 4, 5 (P_ID in (1, 2))
+# 3세대: 6, 7 (P_ID in (3, 4, 5))
 
-WITH
-    g1 AS (
-    SELECT ID
+WITH g1 AS (
+    SELECT
+        id
     FROM ecoli_data
     WHERE parent_id is NULL
-    ),
-    g2 AS (
-    SELECT ID
+), g2 AS (
+    SELECT
+        *
     FROM ecoli_data
-    WHERE parent_id in (SELECT ID FROM g1)
-    ),
-    g3 AS (
-    SELECT ID
-    FROM ecoli_data
-    WHERE parent_id in (SELECT ID FROM g2)
-    )
+    WHERE parent_id in (SELECT id FROM g1)
+)
 
 SELECT
-    *
-FROM g3
-ORDER BY ID
+    id
+FROM ecoli_data
+WHERE parent_id in (SELECT id FROM g2)
+ORDER BY id
