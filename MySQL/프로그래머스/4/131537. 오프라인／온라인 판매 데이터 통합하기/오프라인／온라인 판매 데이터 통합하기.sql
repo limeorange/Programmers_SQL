@@ -1,26 +1,35 @@
-# 250609 월 PM 11:31
+# 251030 목 PM 8:05
 
-WITH all_sales AS (
+WITH t1 AS (
     SELECT
-        sales_date,
+        DATE_FORMAT(sales_date, '%Y-%m-%d') AS sales_date,
         product_id,
         user_id,
-        sales_amount
+        SUM(sales_amount) AS sales_amount
     FROM online_sale
-    UNION
-    SELECT
+    GROUP BY
         sales_date,
         product_id,
-        NULL,
-        sales_amount
+        user_id
+    HAVING sales_date LIKE '2022-03%'
+),
+t2 AS (
+    SELECT
+        DATE_FORMAT(sales_date, '%Y-%m-%d') AS sales_date,
+        product_id,
+        NULL AS user_id,
+        SUM(sales_amount) AS sales_amount
     FROM offline_sale
-)
+    GROUP BY
+        sales_date,
+        product_id
+    HAVING sales_date LIKE '2022-03%')
 
 SELECT
-    DATE_FORMAT(sales_date, '%Y-%m-%d') AS sales_date,
-    product_id,
-    user_id,
-    sales_amount
-FROM all_sales
-WHERE YEAR(sales_date) = 2022 AND MONTH(sales_date) = 3
+    *
+FROM t1
+UNION
+SELECT
+    * 
+FROM t2
 ORDER BY sales_date, product_id, user_id
