@@ -1,19 +1,18 @@
-# 250610 화 PM 10:07
+# 251031 금 PM 12:01
 
-/*
-1. 업그레이드 가능한 item_id 구하기
-2. not in 으로 업그레이드 불가능한 item_id 구하기
-*/
-
-WITH upgrade_item_id AS (
+WITH not_list AS (
     SELECT
-        DISTINCT parent_item_id AS item_id
-    FROM item_tree
-    WHERE parent_item_id is not null
+        DISTINCT parent_item_id
+    FROM ITEM_TREE
+    WHERE
+        parent_item_id is not null
 )
 
 SELECT
-    item_id, item_name, rarity
+    item_id,
+    item_name,
+    rarity
 FROM item_info
-WHERE item_id not in (SELECT item_id FROM upgrade_item_id)
+WHERE
+    ITEM_ID not in (SELECT parent_item_id FROM not_list)
 ORDER BY item_id DESC
