@@ -1,22 +1,31 @@
-# 250610 화 PM 7:48 / WITH RECURSIVE로 hour 열 생성 (재귀 활용)
+# 251031 금 PM 5:16
 
-WITH RECURSIVE
-    hour_table AS (
-    SELECT 0 AS hour
-    UNION
-    SELECT hour+1 FROM hour_table WHERE hour < 23
-    ),
-    count_table AS (
+WITH time_table AS (
+    SELECT 0 AS HOUR
+    UNION SELECT 1 AS HOUR UNION SELECT 2 AS HOUR
+    UNION SELECT 3 AS HOUR UNION SELECT 4 AS HOUR
+    UNION SELECT 5 AS HOUR UNION SELECT 6 AS HOUR
+    UNION SELECT 7 AS HOUR UNION SELECT 8 AS HOUR 
+    UNION SELECT 9 AS HOUR UNION SELECT 10 AS HOUR
+    UNION SELECT 11 AS HOUR UNION SELECT 12 AS HOUR
+    UNION SELECT 13 AS HOUR UNION SELECT 14 AS HOUR
+    UNION SELECT 15 AS HOUR UNION SELECT 16 AS HOUR
+    UNION SELECT 17 AS HOUR UNION SELECT 18 AS HOUR
+    UNION SELECT 19 AS HOUR UNION SELECT 20 AS HOUR
+    UNION SELECT 21 AS HOUR UNION SELECT 22 AS HOUR
+    UNION SELECT 23 AS HOUR
+),
+count_table AS (
     SELECT
         HOUR(datetime) AS hour,
-        COUNT(*) AS count
-    FROM animal_outs
+        COUNT(*) AS COUNT
+    FROM animal_outs AS a
     GROUP BY hour
-    )
+)
 
 SELECT
-    h.hour AS hour,
-    IFNULL(count, 0) AS count
-FROM hour_table AS h
+    a.HOUR,
+    IFNULL(COUNT, 0) AS COUNT
+FROM time_table AS a
 LEFT JOIN count_table AS c
-ON h.hour = c.hour
+ON a.hour = c.hour
